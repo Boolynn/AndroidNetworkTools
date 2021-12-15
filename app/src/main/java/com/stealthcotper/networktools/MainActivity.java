@@ -1,17 +1,17 @@
 package com.stealthcotper.networktools;
 
-import android.content.Intent;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -32,22 +32,22 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView resultText;
-    private EditText editIpAddress;
-    private ScrollView scrollView;
-    private Button pingButton;
-    private Button wolButton;
-    private Button portScanButton;
-    private Button subnetDevicesButton;
+    
+   
+
+
+
+
+ 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        resultText = findViewById(R.id.resultText);
+    
         editIpAddress = findViewById(R.id.editIpAddress);
         scrollView = findViewById(R.id.scrollView1);
         pingButton = findViewById(R.id.pingButton);
@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         subnetDevicesButton = findViewById(R.id.subnetDevicesButton);
 
         InetAddress ipAddress = IPTools.getLocalIPv4Address();
-        if (ipAddress != null){
-            editIpAddress.setText(ipAddress.getHostAddress());
+      
+          Address());
         }
 
         findViewById(R.id.pingButton).setOnClickListener(new View.OnClickListener() {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.portScanButton).setOnClickListener(new View.OnClickListener() {
+      ClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new Thread(new Runnable() {
@@ -110,13 +110,13 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.subnetDevicesButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
+        
+            
                     @Override
                     public void run() {
                         try {
                             findSubnetDevices();
-                        } catch (Exception e) {
+                  
                             e.printStackTrace();
                         }
                     }
@@ -126,75 +126,75 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void appendResultsText(final String text) {
-        runOnUiThread(new Runnable() {
+) {
+    
             @Override
             public void run() {
-                resultText.append(text + "\n");
+            
                 scrollView.post(new Runnable() {
                     @Override
                     public void run() {
-                        scrollView.fullScroll(View.FOCUS_DOWN);
+                  
                     }
                 });
             }
         });
     }
 
-    private void setEnabled(final View view, final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (view != null) {
-                    view.setEnabled(enabled);
+
+     
+      
+       
+              
+                  
                 }
             }
         });
     }
 
-    private void doPing() throws Exception {
-        String ipAddress = editIpAddress.getText().toString();
+   l
+  
 
-        if (TextUtils.isEmpty(ipAddress)) {
-            appendResultsText("Invalid Ip Address");
+    
+           s");
             return;
         }
 
         setEnabled(pingButton, false);
 
-        // Perform a single synchronous ping
-        PingResult pingResult = null;
+       
+      
         try {
-            pingResult = Ping.onAddress(ipAddress).setTimeOutMillis(1000).doPing();
-        } catch (UnknownHostException e) {
+            
+      
             e.printStackTrace();
-            appendResultsText(e.getMessage());
+            
             setEnabled(pingButton, true);
             return;
         }
 
 
-        appendResultsText("Pinging Address: " + pingResult.getAddress().getHostAddress());
-        appendResultsText("HostName: " + pingResult.getAddress().getHostName());
-        appendResultsText(String.format("%.2f ms", pingResult.getTimeTaken()));
+   
+       
+       , pingResult.getTimeTaken()));
 
 
         // Perform an asynchronous ping
         Ping.onAddress(ipAddress).setTimeOutMillis(1000).setTimes(5).doPing(new Ping.PingListener() {
             @Override
-            public void onResult(PingResult pingResult) {
+        ult) {
                 if (pingResult.isReachable) {
-                    appendResultsText(String.format("%.2f ms", pingResult.getTimeTaken()));
+                   "%.2f ms", pingResult.getTimeTaken()));
                 } else {
-                    appendResultsText(getString(R.string.timeout));
+                  .timeout));
                 }
             }
 
             @Override
-            public void onFinished(PingStats pingStats) {
-                appendResultsText(String.format("Pings: %d, Packets lost: %d",
+       ) {
+       s: %d, Packets lost: %d",
                         pingStats.getNoPings(), pingStats.getPacketsLost()));
-                appendResultsText(String.format("Min/Avg/Max Time: %.2f/%.2f/%.2f ms",
+            ?/Avg/Max Time: %.2f/%.2f/%.2f ms",
                         pingStats.getMinTimeTaken(), pingStats.getAverageTimeTaken(), pingStats.getMaxTimeTaken()));
                 setEnabled(pingButton, true);
             }
@@ -208,54 +208,54 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void doWakeOnLan() throws IllegalArgumentException {
-        String ipAddress = editIpAddress.getText().toString();
+  
+xt().toString();
 
-        if (TextUtils.isEmpty(ipAddress)) {
+    )) {
             appendResultsText("Invalid Ip Address");
-            return;
+
         }
 
         setEnabled(wolButton, false);
 
-        appendResultsText("IP address: " + ipAddress);
+        );
 
         // Get mac address from IP (using arp cache)
-        String macAddress = ARPInfo.getMACFromIPAddress(ipAddress);
+      FromIPAddress(ipAddress);
 
-        if (macAddress == null) {
+        if (macAddress == {
             appendResultsText("Could not fromIPAddress MAC address, cannot send WOL packet without it.");
             setEnabled(wolButton, true);
             return;
         }
 
-        appendResultsText("MAC address: " + macAddress);
+     
         appendResultsText("IP address2: " + ARPInfo.getIPAddressFromMAC(macAddress));
 
         // Send Wake on lan packed to ip/mac
         try {
             WakeOnLan.sendWakeOnLan(ipAddress, macAddress);
-            appendResultsText("WOL Packet sent");
-        } catch (IOException e) {
-            appendResultsText(e.getMessage());
+        ;
+    (IOException e) {
+
             e.printStackTrace();
         } finally {
             setEnabled(wolButton, true);
         }
     }
 
-    private void doPortScan() throws Exception {
-        String ipAddress = editIpAddress.getText().toString();
+ 
 
-        if (TextUtils.isEmpty(ipAddress)) {
-            appendResultsText("Invalid Ip Address");
-            setEnabled(portScanButton, true);
-            return;
+
+   
+       
+          
+
         }
 
         setEnabled(portScanButton, false);
 
-        // Perform synchronous port scan
+      
         appendResultsText("PortScanning IP: " + ipAddress);
         ArrayList<Integer> openPorts = PortScan.onAddress(ipAddress).setPort(21).setMethodTCP().doScan();
 
@@ -263,13 +263,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Perform an asynchronous port scan
         PortScan portScan = PortScan.onAddress(ipAddress).setPortsAll().setMethodTCP().doScan(new PortScan.PortListener() {
-            @Override
-            public void onResult(int portNo, boolean open) {
-                if (open) appendResultsText("Open: " + portNo);
+         
+       
+
             }
 
             @Override
-            public void onFinished(ArrayList<Integer> openPorts) {
+       oid onFinished(ArrayList<Integer> openPorts) {
                 appendResultsText("Open Ports: " + openPorts.size());
                 appendResultsText("Time Taken: " + ((System.currentTimeMillis() - startTimeMillis)/1000.0f));
                 setEnabled(portScanButton, true);
