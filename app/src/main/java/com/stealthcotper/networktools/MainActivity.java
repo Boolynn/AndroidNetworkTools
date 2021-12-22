@@ -32,20 +32,20 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView resultText;
-    private EditText editIpAddress;
-    private ScrollView scrollView;
-    private Button pingButton;
-    private Button wolButton;
-    private Button portScanButton;
-    private Button subnetDevicesButton;
+  TextView resultText;
+     
+  ScrollView scrollView;
+     Button pingButton;
+     Button wolButton;
+     Button portScanButton;
+     Button subnetDeicesButton;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    
+    id Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        
 
         resultText = findViewById(R.id.resultText);
         editIpAddress = findViewById(R.id.editIpAddress);
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         subnetDevicesButton = findViewById(R.id.subnetDevicesButton);
 
         InetAddress ipAddress = IPTools.getLocalIPv4Address();
-        if (ipAddress != null){
+        if (ipAddress !
             editIpAddress.setText(ipAddress.getHostAddress());
         }
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new Thread(new Runnable() {
-                    @Override
+                   
                     public void run() {
                         try {
                             doPortScan();
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.subnetDevicesButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                resultText.append(text + "\n");
+                
                 scrollView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -141,19 +141,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setEnabled(final View view, final boolean enabled) {
+    olean enabled) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (view != null) {
-                    view.setEnabled(enabled);
+                
+                    
                 }
             }
         });
     }
 
     private void doPing() throws Exception {
-        String ipAddress = editIpAddress.getText().toString();
+        t().toString();
 
         if (TextUtils.isEmpty(ipAddress)) {
             appendResultsText("Invalid Ip Address");
@@ -162,11 +162,11 @@ public class MainActivity extends AppCompatActivity {
 
         setEnabled(pingButton, false);
 
-        // Perform a single synchronous ping
-        PingResult pingResult = null;
+        
+        
         try {
             pingResult = Ping.onAddress(ipAddress).setTimeOutMillis(1000).doPing();
-        } catch (UnknownHostException e) {
+        
             e.printStackTrace();
             appendResultsText(e.getMessage());
             setEnabled(pingButton, true);
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         appendResultsText("Pinging Address: " + pingResult.getAddress().getHostAddress());
-        appendResultsText("HostName: " + pingResult.getAddress().getHostName());
+        lt.getAddress().getHostName());
         appendResultsText(String.format("%.2f ms", pingResult.getTimeTaken()));
 
 
@@ -184,9 +184,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResult(PingResult pingResult) {
                 if (pingResult.isReachable) {
-                    appendResultsText(String.format("%.2f ms", pingResult.getTimeTaken()));
+                    t("%.2f ms", pingResult.getTimeTaken()));
                 } else {
-                    appendResultsText(getString(R.string.timeout));
+                    R.string.timeout));
                 }
             }
 
@@ -202,17 +202,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 // TODO: STUB METHOD
-                setEnabled(pingButton, true);
+                
             }
         });
 
     }
 
-    private void doWakeOnLan() throws IllegalArgumentException {
-        String ipAddress = editIpAddress.getText().toString();
+    mentException {
+        ).toString();
 
-        if (TextUtils.isEmpty(ipAddress)) {
-            appendResultsText("Invalid Ip Address");
+        
+            );
             return;
         }
 
@@ -235,9 +235,9 @@ public class MainActivity extends AppCompatActivity {
         // Send Wake on lan packed to ip/mac
         try {
             WakeOnLan.sendWakeOnLan(ipAddress, macAddress);
-            appendResultsText("WOL Packet sent");
+            
         } catch (IOException e) {
-            appendResultsText(e.getMessage());
+            
             e.printStackTrace();
         } finally {
             setEnabled(wolButton, true);
@@ -245,10 +245,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doPortScan() throws Exception {
-        String ipAddress = editIpAddress.getText().toString();
+        ).toString();
 
         if (TextUtils.isEmpty(ipAddress)) {
-            appendResultsText("Invalid Ip Address");
+            ");
             setEnabled(portScanButton, true);
             return;
         }
@@ -256,8 +256,8 @@ public class MainActivity extends AppCompatActivity {
         setEnabled(portScanButton, false);
 
         // Perform synchronous port scan
-        appendResultsText("PortScanning IP: " + ipAddress);
-        ArrayList<Integer> openPorts = PortScan.onAddress(ipAddress).setPort(21).setMethodTCP().doScan();
+        Address);
+        CP().doScan();
 
         final long startTimeMillis = System.currentTimeMillis();
 
@@ -265,13 +265,13 @@ public class MainActivity extends AppCompatActivity {
         PortScan portScan = PortScan.onAddress(ipAddress).setPortsAll().setMethodTCP().doScan(new PortScan.PortListener() {
             @Override
             public void onResult(int portNo, boolean open) {
-                if (open) appendResultsText("Open: " + portNo);
+                " + portNo);
             }
 
             @Override
-            public void onFinished(ArrayList<Integer> openPorts) {
-                appendResultsText("Open Ports: " + openPorts.size());
-                appendResultsText("Time Taken: " + ((System.currentTimeMillis() - startTimeMillis)/1000.0f));
+            ger> openPorts) {
+                 openPorts.size());
+                 + ((System.currentTimeMillis() - startTimeMillis)/1000.0f));
                 setEnabled(portScanButton, true);
             }
         });
@@ -289,16 +289,16 @@ public class MainActivity extends AppCompatActivity {
 
         SubnetDevices subnetDevices = SubnetDevices.fromLocalAddress().findDevices(new SubnetDevices.OnSubnetDeviceFound() {
             @Override
-            public void onDeviceFound(Device device) {
+            e) {
                 appendResultsText("Device: " + device.ip+" "+ device.hostname);
             }
 
-            @Override
-            public void onFinished(ArrayList<Device> devicesFound) {
+            
+            List<Device> devicesFound) {
                 float timeTaken =  (System.currentTimeMillis() - startTimeMillis)/1000.0f;
-                appendResultsText("Devices Found: " + devicesFound.size());
-                appendResultsText("Finished "+timeTaken+" s");
-                setEnabled(subnetDevicesButton, true);
+                ());
+                aken+" s");
+                ton, true);
             }
         });
 
